@@ -1,4 +1,11 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.db import Datasheet, INTEGER, STRING
 from pattern.db import uid, pprint
@@ -17,10 +24,10 @@ from pattern.db import uid, pprint
 # For other data types, custom encoder and decoder functions can be used.
 
 ds = Datasheet(rows=[
-    [uid(), "broccoli",  "vegetable"],
-    [uid(), "turnip",    "vegetable"],
+    [uid(), "broccoli", "vegetable"],
+    [uid(), "turnip", "vegetable"],
     [uid(), "asparagus", "vegetable"],
-    [uid(), "banana",    "fruit"],
+    [uid(), "banana", "fruit"],
 ], fields=[
       ("id", INTEGER),  # Define the column headers.
     ("name", STRING),

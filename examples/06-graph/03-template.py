@@ -1,11 +1,18 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.graph import Graph, CSS, CANVAS
 
 # This example demonstrates how to roll dynamic HTML graphs.
 # We have a HTML template in which content is inserted on-the-fly.
 
-# This is useful if the graph data changes dynamically, 
+# This is useful if the graph data changes dynamically,
 # e.g., the user clicks on a node and is taken to a webpage with a new subgraph.
 
 template = '''
@@ -25,6 +32,7 @@ template = '''
 </html>
 '''.strip()
 
+
 def webpage(graph, **kwargs):
     s1 = graph.serialize(CSS, **kwargs)
     s2 = graph.serialize(CANVAS, **kwargs)
@@ -43,6 +51,6 @@ g.add_edge("cat", "dog")
 ##!/usr/bin/env python
 #import cgi
 #import cgitb; cgitb.enable() # Debug mode.
-#print "Content-type: text/html"
+#print("Content-type: text/html")
 
-print webpage(g, width=500, height=500)
+print(webpage(g, width=500, height=500))

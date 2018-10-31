@@ -1,4 +1,11 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.en import article, referenced
 from pattern.en import pluralize, singularize
@@ -39,7 +46,7 @@ print("")
 # ---------------
 # The singularize() function returns the singular form of a plural noun (or adjective).
 # It is slightly less robust than the pluralize() function.
-for word in ["parts-of-speech", "children", "dogs'", "wolves", "bears", "kitchen knives", 
+for word in ["parts-of-speech", "children", "dogs'", "wolves", "bears", "kitchen knives",
              "octopodes", "matrices", "matrixes"]:
     print(singularize(word))
 print(singularize("our", pos=ADJECTIVE))
@@ -62,13 +69,13 @@ print("lemma: %s" % lemma("was"))
 print("")
 
 # The conjugate() function inflects a verb to another tense.
-# You can supply: 
-# - tense : INFINITIVE, PRESENT, PAST, 
-# - person: 1, 2, 3 or None, 
+# You can supply:
+# - tense : INFINITIVE, PRESENT, PAST,
+# - person: 1, 2, 3 or None,
 # - number: SINGULAR, PLURAL,
 # - mood  : INDICATIVE, IMPERATIVE,
 # - aspect: IMPERFECTIVE, PROGRESSIVE.
-# The tense can also be given as an abbreviated alias, e.g., 
+# The tense can also be given as an abbreviated alias, e.g.,
 # inf, 1sg, 2sg, 3sg, pl, part, 1sgp, 2sgp, 3sgp, ppl, ppart.
 from pattern.en import PRESENT, SINGULAR
 print(conjugate("being", tense=PRESENT, person=1, number=SINGULAR, negated=False))

@@ -1,7 +1,14 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.search import match
-from pattern.en     import Sentence, parse
+from pattern.en import Sentence, parse
 
 # This example demonstrates how to exclude certain words or tags from a constraint.
 # It also demonstrates the use of "^",
@@ -25,10 +32,11 @@ from pattern.en     import Sentence, parse
 # This catches all sentences that start with a "do" verb regardless if it is infinitive,
 # because the parses sometimes tags infinitive "do" incorrectly.
 
+
 def imperative(sentence):
     for p in ("!could|!would|!should|!to+ VB", "^VB", "^do|VB*"):
         m = match(p, sentence)
-        if match(p, sentence) and sentence.string.endswith((".","!")):  # Exclude questions.
+        if match(p, sentence) and sentence.string.endswith((".", "!")):  # Exclude questions.
             return True
     return False
 
@@ -44,4 +52,3 @@ for s in (
     print(s)
     print(imperative(s))
     print("")
-

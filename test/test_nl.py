@@ -1,9 +1,22 @@
 # -*- coding: utf-8 -*-
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+
+from builtins import str, bytes, dict, int
+from builtins import map, zip, filter
+from builtins import object, range
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import unittest
 import subprocess
 
 from pattern import nl
+
+from io import open
 
 try:
     PATH = os.path.dirname(os.path.realpath(__file__))
@@ -12,11 +25,12 @@ except:
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestInflection(unittest.TestCase):
 
     def setUp(self):
         pass
-        
+
     def test_pluralize(self):
         # Assert "auto's" as plural of "auto".
         self.assertEqual("auto's", nl.inflect.pluralize("auto"))
@@ -25,18 +39,18 @@ class TestInflection(unittest.TestCase):
         i, n = 0, 0
         for pred, attr, sg, pl in Datasheet.load(os.path.join(PATH, "corpora", "wordforms-nl-celex.csv")):
             if nl.pluralize(sg) == pl:
-                i +=1
+                i += 1
             n += 1
         self.assertTrue(float(i) / n > 0.74)
         print("pattern.nl.pluralize()")
-        
+
     def test_singularize(self):
         # Assert the accuracy of the singularization algorithm.
         from pattern.db import Datasheet
         i, n = 0, 0
         for pred, attr, sg, pl in Datasheet.load(os.path.join(PATH, "corpora", "wordforms-nl-celex.csv")):
             if nl.singularize(pl) == sg:
-                i +=1
+                i += 1
             n += 1
         self.assertTrue(float(i) / n > 0.88)
         print("pattern.nl.singularize()")
@@ -47,18 +61,18 @@ class TestInflection(unittest.TestCase):
         i, n = 0, 0
         for pred, attr, sg, pl in Datasheet.load(os.path.join(PATH, "corpora", "wordforms-nl-celex.csv")):
             if nl.attributive(pred) == attr:
-                i +=1
+                i += 1
             n += 1
         self.assertTrue(float(i) / n > 0.96)
         print("pattern.nl.attributive()")
-        
+
     def test_predicative(self):
         # Assert the accuracy of the predicative algorithm ("felle" => "fel").
         from pattern.db import Datasheet
         i, n = 0, 0
         for pred, attr, sg, pl in Datasheet.load(os.path.join(PATH, "corpora", "wordforms-nl-celex.csv")):
             if nl.predicative(attr) == pred:
-                i +=1
+                i += 1
             n += 1
         self.assertTrue(float(i) / n > 0.96)
         print("pattern.nl.predicative()")
@@ -69,12 +83,12 @@ class TestInflection(unittest.TestCase):
         # (presumably because nl.inflect.verbs has high percentage irregular verbs).
         i, n = 0, 0
         for v1, v2 in nl.inflect.verbs.inflections.items():
-            if nl.inflect.verbs.find_lemma(v1) == v2: 
+            if nl.inflect.verbs.find_lemma(v1) == v2:
                 i += 1
             n += 1
         self.assertTrue(float(i) / n > 0.83)
         print("pattern.nl.inflect.verbs.find_lemma()")
-        
+
     def test_find_lexeme(self):
         # Assert the accuracy of the verb conjugation algorithm.
         i, n = 0, 0
@@ -136,11 +150,12 @@ class TestInflection(unittest.TestCase):
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestParser(unittest.TestCase):
-    
+
     def setUp(self):
         pass
-   
+
     def test_wotan2penntreebank(self):
         # Assert tag translation.
         for penntreebank, wotan in (
@@ -175,16 +190,16 @@ class TestParser(unittest.TestCase):
           ("SYM",  "Misc(symbool)")):
             self.assertEqual(nl.wotan2penntreebank("", wotan)[1], penntreebank)
         print("pattern.nl.wotan2penntreebank()")
-        
+
     def test_find_lemmata(self):
         # Assert lemmata for nouns and verbs.
         v = nl.parser.find_lemmata([["katten", "NNS"], ["droegen", "VBD"], ["hoeden", "NNS"]])
         self.assertEqual(v, [
-            ["katten", "NNS", "kat"], 
-            ["droegen", "VBD", "dragen"], 
+            ["katten", "NNS", "kat"],
+            ["droegen", "VBD", "dragen"],
             ["hoeden", "NNS", "hoed"]])
         print("pattern.nl.parser.find_lemmata()")
-    
+
     def test_parse(self):
         # Assert parsed output with Penn Treebank II tags (slash-formatted).
         # 1) "de zwarte kat" is a noun phrase, "op de mat" is a prepositional noun phrase.
@@ -204,7 +219,7 @@ class TestParser(unittest.TestCase):
         # Assert the accuracy of the Dutch tagger.
         i, n = 0, 0
         for sentence in open(os.path.join(PATH, "corpora", "tagged-nl-twnc.txt")).readlines():
-            sentence = sentence.decode("utf-8").strip()
+            sentence = sentence.strip()
             s1 = [w.split("/") for w in sentence.split(" ")]
             s1 = [nl.wotan2penntreebank(w, tag) for w, tag in s1]
             s2 = [[w for w, pos in s1]]
@@ -222,21 +237,22 @@ class TestParser(unittest.TestCase):
         v = nl.tag("zwarte panters")
         self.assertEqual(v, [("zwarte", "JJ"), ("panters", "NNS")])
         print("pattern.nl.tag()")
-    
+
     def test_command_line(self):
         # Assert parsed output from the command-line (example from the documentation).
         p = ["python", "-m", "pattern.nl", "-s", "Leuke kat.", "-OTCRL"]
         p = subprocess.Popen(p, stdout=subprocess.PIPE)
         p.wait()
-        v = p.stdout.read()
+        v = p.stdout.read().decode('utf-8')
         v = v.strip()
         self.assertEqual(v, "Leuke/JJ/B-NP/O/O/leuk kat/NN/I-NP/O/O/kat ././O/O/O/.")
         print("python -m pattern.nl")
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestSentiment(unittest.TestCase):
-    
+
     def setUp(self):
         pass
 
@@ -262,6 +278,7 @@ class TestSentiment(unittest.TestCase):
 
 #---------------------------------------------------------------------------------------------------
 
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestInflection))
@@ -270,4 +287,6 @@ def suite():
     return suite
 
 if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=1).run(suite())
+
+    result = unittest.TextTestRunner(verbosity=1).run(suite())
+    sys.exit(not result.wasSuccessful())

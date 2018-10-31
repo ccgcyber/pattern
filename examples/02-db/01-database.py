@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.db import Database, SQLITE, MYSQL
 from pattern.db import field, pk, STRING, INTEGER, DATE, NOW
@@ -24,7 +32,7 @@ db = Database(pd("store.db"), type=SQLITE)
 # Create the products table if it doesn't exist yet.
 # An error will be raised if the table already exists.
 # Add sample data.
-if not "products" in db:
+if "products" not in db:
     # Note: in SQLite, the STRING type is mapped to TEXT (unlimited length).
     # In MySQL, the length matters. Smaller fields have faster lookup.
     schema = (
@@ -39,19 +47,19 @@ if not "products" in db:
 
 # CUSTOMERS
 # Create the customers table and add data.
-if not "customers" in db:
+if "customers" not in db:
     schema = (
         pk(),
         field("name", STRING(50)),
         field("address", STRING(200))
     )
     db.create("customers", schema)
-    db.customers.append(name=u"Schrödinger")  # Unicode is supported.
-    db.customers.append(name=u"Hofstadter")
+    db.customers.append(name="Schrödinger")  # Unicode is supported.
+    db.customers.append(name="Hofstadter")
 
 # ORDERS
 # Create the orders table if it doesn't exist yet and add data.
-if not "orders" in db:
+if "orders" not in db:
     schema = (
         pk(),
         field("product_id", INTEGER),
@@ -72,9 +80,9 @@ for row in assoc(db.products):
 # To get the related data, we can create a query with relations between the tables.
 q = db.orders.search(
     fields = (
-       "products.description", 
-       "products.price", 
-       "customers.name", 
+       "products.description",
+       "products.price",
+       "customers.name",
        "date"
     ),
     relations = (

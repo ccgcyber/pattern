@@ -1,6 +1,14 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 import glob
-import codecs
+
+from io import open
 
 from pattern.vector import Document, Model, TF, TFIDF
 
@@ -19,7 +27,7 @@ from pattern.vector import Document, Model, TF, TFIDF
 # to represent this.
 
 # A Model is a collection of documents vectors.
-# A Model is a matrix (or vector space) 
+# A Model is a matrix (or vector space)
 # with features as columns and feature weights as rows.
 # We can then do calculations on the matrix,
 # for example to compute TF-IDF or similarity between documents.
@@ -27,20 +35,20 @@ from pattern.vector import Document, Model, TF, TFIDF
 # Load a model from a folder of text documents:
 documents = []
 for f in glob.glob(os.path.join(os.path.dirname(__file__), "corpus", "*.txt")):
-    text = codecs.open(f, encoding="utf-8").read()
+    text = open(f, encoding="utf-8").read()
     name = os.path.basename(f)[:-4]
     documents.append(Document(text, name=name))
-    
+
 m = Model(documents, weight=TFIDF)
 
 # We can retrieve documents by name:
 d = m.document(name="lion")
 
-print d.keywords(top=10)
-print
-print d.tf("food")
-print d.tfidf("food") # TF-IDF is less: "food" is also mentioned with the other animals.
-print
+print(d.keywords(top=10))
+print()
+print(d.tf("food"))
+print(d.tfidf("food")) # TF-IDF is less: "food" is also mentioned with the other animals.
+print()
 
 # We can compare how similar two documents are.
 # This is done by calculating the distance between the document vectors
@@ -60,18 +68,18 @@ d2 = m.document(name="tiger")
 d3 = m.document(name="dolphin")
 d4 = m.document(name="shark")
 d5 = m.document(name="parakeet")
-print "lion-tiger:", m.similarity(d1, d2)
-print "lion-dolphin:", m.similarity(d1, d3)
-print "dolphin-shark:", m.similarity(d3, d4)
-print "dolphin-parakeet:", m.similarity(d3, d5)
-print
+print("lion-tiger:", m.similarity(d1, d2))
+print("lion-dolphin:", m.similarity(d1, d3))
+print("dolphin-shark:", m.similarity(d3, d4))
+print("dolphin-parakeet:", m.similarity(d3, d5))
+print()
 
-print "Related to tiger:"
-print m.neighbors(d2, top=3) # Top three most similar.
-print
+print("Related to tiger:")
+print(m.neighbors(d2, top=3)) # Top three most similar.
+print()
 
-print "Related to a search query ('water'):"
-print m.search("water", top=10)
+print("Related to a search query ('water'):")
+print(m.search("water", top=10))
 
 # In summary:
 

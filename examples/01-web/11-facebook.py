@@ -1,7 +1,14 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.web import Facebook, NEWS, COMMENTS, LIKES
-from pattern.db  import Datasheet, pprint, pd
+from pattern.db import Datasheet, pprint, pd
 
 # The Facebook API can be used to search public status updates (no license needed).
 
@@ -72,7 +79,7 @@ if license != "":
         if status.comments > 0:
             # Retrieve comments on the status update.
             print("%s comments:" % status.comments)
-            print([(x.author, x.text, x.likes) 
+            print([(x.author, x.text, x.likes)
                 for x in fb.search(status.id, type=COMMENTS)])
         if status.likes > 0:
             # Retrieve likes on the status update.

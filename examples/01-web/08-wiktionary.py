@@ -1,4 +1,11 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.web import Wiktionary, DOM
 from pattern.db import csv, pd
@@ -28,6 +35,7 @@ for gender in ("male", "female"):
 
 from pattern.vector import SVM, chngrams, count, kfoldcv
 
+
 class GenderByName(SVM):
 
     def train(self, name, gender=None):
@@ -36,7 +44,7 @@ class GenderByName(SVM):
     def classify(self, name):
         return SVM.classify(self, self.vector(name))
 
-    def vector(self, name): 
+    def vector(self, name):
         """ Returns a dictionary with character bigrams and suffix.
             For example, "Felix" => {"Fe":1, "el":1, "li":1, "ix":1, "ix$":1, 5:1}
         """

@@ -1,7 +1,14 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.search import search, Pattern, Constraint
-from pattern.en     import parsetree, parse, Sentence
+from pattern.en import parsetree, parse, Sentence
 
 # What we call a "search word" in example 01-search.py
 # is actually called a constraint, because it can contain different options.
@@ -41,7 +48,7 @@ print("")
 p = Pattern.fromstring("rabbit stare at feet", s)
 p.strict = True  # Now it matches only what the pattern explicitly defines (=no match).
 m = p.search(s)
-print m
+print(m)
 print("")
 
 # Sentence chunks can be matched by tag (e.g. NP, VP, ADJP).

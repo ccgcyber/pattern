@@ -1,4 +1,11 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.server import App
 from pattern.server import MINUTE, HOUR, DAY
@@ -7,7 +14,7 @@ from pattern.text import language
 
 app = App("api")
 
-# The language() function in pattern.text guesses the language of a given string. 
+# The language() function in pattern.text guesses the language of a given string.
 # For example: language("In French, goodbye is au revoir.") returns ("en", 0.83).
 # It can handle "en", "es", "de", "fr", "nl", "it" with reasonable accuracy.
 
@@ -29,15 +36,16 @@ app = App("api")
 # You should see some JSON-output:
 # {"language": "en", "confidence": 0.83}
 
+
 @app.route("/language", limit=100, time=HOUR)
 def predict_language(q=""):
-    #print q
+    #print(q)
     iso, confidence = language(q) # (takes some time to load the first time)
     return {
-          "language": iso, 
+          "language": iso,
         "confidence": round(confidence, 2)
     }
-    
+
 # When you set up a web service, expect high traffic peaks.
 # For example, a user may have 10,000 sentences
 # and send them all at once in a for-loop to our web service:
@@ -60,22 +68,24 @@ def predict_language(q=""):
 # http://127.0.0.1:8080/language/paid?q=hello&key=1234
 
 # Check personal keys instead of IP-address:
+
+
 @app.route("/language/paid", limit=True, key=lambda data: data.get("key"))
 def predict_language_paid(q="", key=None):
     return {"language": language(q)[0]}
-    
+
 # Create an account for user with key=1234 (do once).
 # You can generate fairly safe keys with app.rate.key().
 if not app.rate.get(key="1234", path="/language/paid"):
     app.rate.set(key="1234", path="/language/paid", limit=10000, time=DAY)
-    
+
 # Try it out with the key and without the key:
 # http://127.0.0.1:8080/language/paid?q=hello&key=1234
 # http://127.0.0.1:8080/language/paid?q=hello           (403 error)
 
 # A rate.db SQLite database was created in the current folder.
 # If you want to give it another name, use App(rate="xxx.db").
-# To view the contents of the database,we use the free 
+# To view the contents of the database,we use the free
 # SQLite Database Browser (http://sqlitebrowser.sourceforge.net).
 
 # If the web service is heavily used,

@@ -1,9 +1,17 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from pattern.web    import Bing, plaintext
-from pattern.en     import parsetree
+from builtins import str, bytes, dict, int
+from builtins import range
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from pattern.web import Bing, plaintext
+from pattern.en import parsetree
 from pattern.search import Pattern
-from pattern.db     import Datasheet, pprint
+from pattern.db import Datasheet, pprint
 
 # "X IS MORE IMPORTANT THAN Y"
 # Here is a rough example of how to build a web miner.
@@ -21,15 +29,15 @@ d = Datasheet()
 
 engine = Bing(license=None)
 for i in range(1):  # max=10
-    for result in engine.search(q, start=i+1, count=100, cached=True):
+    for result in engine.search(q, start=i + 1, count=100, cached=True):
         s = result.description
         s = plaintext(s)
         t = parsetree(s)
         for m in p.search(t):
-            a = m.constituents(constraint=0)[-1]  # Left NP.
-            b = m.constituents(constraint=5)[ 0]  # Right NP.
+            a = m.constituents(constraint=0)[-1] # Left NP.
+            b = m.constituents(constraint=5)[0]  # Right NP.
             d.append((
-                a.string.lower(), 
+                a.string.lower(),
                 b.string.lower()))
 
 pprint(d)

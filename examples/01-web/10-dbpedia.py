@@ -1,5 +1,13 @@
 # -*- coding: utf-8 *-*
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.web import DBPedia
 
@@ -35,7 +43,7 @@ for result in dbp.search(q, start=1, count=10):
     print(result.actor)
 print("")
 
-# You may notice that each Result.actor is of the form: 
+# You may notice that each Result.actor is of the form:
 # "http://dbpedia.org/resource/[NAME]"
 # This kind of string is a subclass of unicode: DBPediaResource.
 # DBPediaResource has a DBPediaResource.name property (see below).
@@ -134,7 +142,7 @@ print("")
 
 # 6) People whose first name includes "Édouard"
 
-q = u"""
+q = """
 prefix dbo: <http://dbpedia.org/ontology/>
 prefix foaf: <http://xmlns.com/foaf/0.1/>
 select ?person ?name where { 

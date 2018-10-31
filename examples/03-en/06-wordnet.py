@@ -1,10 +1,17 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.en import wordnet
 from pattern.en import NOUN, VERB
 
-# WordNet is a lexical database for the English language. 
-# It groups English words into sets of synonyms called synsets, provides short, general definitions, 
+# WordNet is a lexical database for the English language.
+# It groups English words into sets of synonyms called synsets, provides short, general definitions,
 # and records the various semantic relations between these synonym sets.
 
 # For a given word, WordNet yields a list of synsets that
@@ -31,7 +38,7 @@ print("")
 synset = wordnet.synsets("animal")[0]
 for s in synset.hyponyms(recursive=True, depth=2):
     for word in s.senses:
-        if word in wordnet.VERBS:
+        if word in wordnet.VERBS():
             print("%s => %s" % (word, wordnet.synsets(word, pos=VERB)))
 
 # Synset.similarity() returns an estimate of the semantic similarity to another synset,

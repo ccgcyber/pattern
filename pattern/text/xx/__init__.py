@@ -18,6 +18,14 @@
 
 # Tools for word inflection should be bundled in pattern.text.xx.inflect.
 
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+
+from builtins import str, bytes, dict, int
+from builtins import map, zip, filter
+from builtins import object, range
+
 import os
 import sys
 
@@ -76,6 +84,7 @@ sys.path.pop(0)
 
 TAGSET = {"??": "NN"} # pattern.xx tagset => Penn Treebank II.
 
+
 def tagset2penntreebank(tag):
     return TAGSET.get(tag, tag)
 
@@ -83,11 +92,12 @@ def tagset2penntreebank(tag):
 # and abbreviations. The following functions define contractions and abbreviations
 # for pattern.xx, see also Parser.find_tokens().
 
-REPLACEMENTS  = {"'s": " 's", "'ve": " 've"}
+REPLACEMENTS = {"'s": " 's", "'ve": " 've"}
 ABBREVIATIONS = set(("e.g.", "etc.", "i.e."))
 
 # A lemmatizer can be constructed if we have a pattern.xx.inflect,
 # with functions for noun singularization and verb conjugation (i.e., infinitives).
+
 
 def find_lemmata(tokens):
     """ Annotates the tokens with lemmata for plural nouns and conjugated verbs,
@@ -96,7 +106,7 @@ def find_lemmata(tokens):
     for token in tokens:
         word, pos, lemma = token[0], token[1], token[0]
         if pos.startswith("JJ"):
-            lemma = predicative(word)  
+            lemma = predicative(word)
         if pos == "NNS":
             lemma = singularize(word)
         if pos.startswith(("VB", "MD")):
@@ -106,17 +116,18 @@ def find_lemmata(tokens):
 
 # Subclass the base parser with the language-specific functionality:
 
+
 class Parser(_Parser):
-    
+
     def find_tokens(self, tokens, **kwargs):
         kwargs.setdefault("abbreviations", ABBREVIATIONS)
         kwargs.setdefault("replace", REPLACEMENTS)
         return _Parser.find_tokens(self, tokens, **kwargs)
-        
+
     def find_tags(self, tokens, **kwargs):
         kwargs.setdefault("map", tagset2penntreebank)
         return _Parser.find_tags(self, tokens, **kwargs)
-        
+
     def find_chunks(self, tokens, **kwargs):
         return _Parser.find_chunks(self, tokens, **kwargs)
 
@@ -146,40 +157,45 @@ lexicon = parser.lexicon # Expose lexicon.
 # Create the sentiment lexicon,
 # see pattern/text/xx/xx-sentiment.xml for further details.
 # We also need to define the tag for modifiers,
-# words that modify the score of the following word 
+# words that modify the score of the following word
 # (e.g., *very* good, *not good, ...)
 
 sentiment = Sentiment(
-        path = os.path.join(MODULE, "xx-sentiment.xml"), 
+        path = os.path.join(MODULE, "xx-sentiment.xml"),
       synset = None,
    negations = ("no", "not", "never"),
    modifiers = ("RB",),
-   modifier  = lambda w: w.endswith("ly"), # brilliantly, hardly, partially, ...
+   modifier = lambda w: w.endswith("ly"), # brilliantly, hardly, partially, ...
     language = "xx"
 )
 
 # Nothing should be changed below.
+
 
 def tokenize(s, *args, **kwargs):
     """ Returns a list of sentences, where punctuation marks have been split from words.
     """
     return parser.find_tokens(s, *args, **kwargs)
 
+
 def parse(s, *args, **kwargs):
     """ Returns a tagged Unicode string.
     """
     return parser.parse(s, *args, **kwargs)
+
 
 def parsetree(s, *args, **kwargs):
     """ Returns a parsed Text from the given string.
     """
     return Text(parse(s, *args, **kwargs))
 
+
 def tree(s, token=[WORD, POS, CHUNK, PNP, REL, LEMMA]):
     """ Returns a parsed Text from the given parsed string.
     """
     return Text(s, token)
-    
+
+
 def tag(s, tokenize=True, encoding="utf-8", **kwargs):
     """ Returns a list of (token, tag)-tuples from the given string.
     """
@@ -189,25 +205,29 @@ def tag(s, tokenize=True, encoding="utf-8", **kwargs):
             tags.append((token[0], token[1]))
     return tags
 
+
 def keywords(s, top=10, **kwargs):
-     """ Returns a sorted list of keywords in the given string.
-     """
+    """ Returns a sorted list of keywords in the given string.
+    """
     return parser.find_keywords(s, **dict({
         "frequency": parser.frequency,
               "top": top,
               "pos": ("NN",),
            "ignore": ("rt",)}, **kwargs))
-     
+
+
 def polarity(s, **kwargs):
     """ Returns the sentence polarity (positive/negative) between -1.0 and 1.0.
     """
     return sentiment(s, **kwargs)[0]
 
+
 def subjectivity(s, **kwargs):
     """ Returns the sentence subjectivity (objective/subjective) between 0.0 and 1.0.
     """
     return sentiment(s, **kwargs)[1]
-    
+
+
 def positive(s, threshold=0.1, **kwargs):
     """ Returns True if the given sentence has a positive sentiment.
     """

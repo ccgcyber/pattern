@@ -1,7 +1,14 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.search import search
-from pattern.en     import parsetree
+from pattern.en import parsetree
 
 # Constraints ending in "?" are optional, matching one or no word.
 # Pattern.search() uses a "greedy" approach:
@@ -15,7 +22,7 @@ for s in (
   "tasty cat food",       # JJ NN NN
   "the funny black cat",  # JJ NN
   "very funny",           # RB JJ => no match, since there is no noun.
-  "my cat is black and your cat is white"):  # NN + NN  
+  "my cat is black and your cat is white"):  # NN + NN
     t = parsetree(s)
     m = search("DT? RB? JJ? NN+", t)
     print("")

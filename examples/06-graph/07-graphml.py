@@ -1,7 +1,15 @@
-import os, sys; sys.path.insert(0, os.path.join("..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+from builtins import range
+
+import os
+import sys
+sys.path.insert(0, os.path.join("..", ".."))
 
 from pattern.graph import Graph, WEIGHT, CENTRALITY, DEGREE, DEFAULT
-from random        import choice, random
+from random import choice, random
 
 # This example demonstrates how a graph visualization can be exported to GraphML,
 # a file format that can be opened in Gephi (https://gephi.org).
@@ -14,7 +22,7 @@ for i in range(50):
 for i in range(75):
     node1 = choice(g.nodes)
     node2 = choice(g.nodes)
-    g.add_edge(node1, node2, 
+    g.add_edge(node1, node2,
                weight = random())
 
 g.prune(0)

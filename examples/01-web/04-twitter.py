@@ -1,11 +1,19 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+from builtins import range
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.web import Twitter, hashtags
-from pattern.db  import Datasheet, pprint, pd
+from pattern.db import Datasheet, pprint, pd
 
 # This example retrieves tweets containing given keywords from Twitter.
 
-try: 
+try:
     # We'll store tweets in a Datasheet.
     # A Datasheet is a table of rows and columns that can be exported as a CSV-file.
     # In the first column, we'll store a unique id for each tweet.

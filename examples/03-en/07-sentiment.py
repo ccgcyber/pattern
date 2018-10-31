@@ -1,4 +1,11 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.en import sentiment, polarity, subjectivity, positive
 
@@ -20,7 +27,7 @@ print(sentiment(
     "but it's presented in such a ridiculous way it's seriously boring."))
 
 # The input string can be:
-# - a string, 
+# - a string,
 # - a Synset (see pattern.en.wordnet),
 # - a parsed Sentence, Text, Chunk or Word (see pattern.en),
 # - a Document (see pattern.vector).

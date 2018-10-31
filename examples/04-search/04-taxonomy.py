@@ -1,9 +1,16 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.search import search, taxonomy, Classifier
-from pattern.en     import parsetree
+from pattern.en import parsetree
 
-# The search module includes a Taxonomy class 
+# The search module includes a Taxonomy class
 # that can be used to define semantic word types.
 # For example, consider that you want to extract flower names from a text.
 # This would make search patterns somewhat unwieldy:
@@ -12,12 +19,12 @@ from pattern.en     import parsetree
 # A better approach is to use the taxonomy:
 for flower in ("rose", "lily", "daisy", "daffodil", "begonia"):
     taxonomy.append(flower, type="flower")
-    
+
 print(taxonomy.children("flower"))
 print(taxonomy.parents("rose"))
 print(taxonomy.classify("rose"))  # Yields the most recently added parent.
 print("")
-    
+
 # Taxonomy terms can be included in a pattern by using uppercase:
 t = parsetree("A field of white daffodils.", lemmata=True)
 m = search("FLOWER", t)
@@ -58,6 +65,7 @@ print("")
 # Classifiers are quite slow but useful in many ways.
 # For example, a classifier could be written to dynamically
 # retrieve word categories from WordNet.
+
 
 def find_parents(word):
     if word.startswith(("mac os", "windows", "ubuntu")):

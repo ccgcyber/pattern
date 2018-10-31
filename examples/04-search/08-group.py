@@ -1,7 +1,14 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.search import match
-from pattern.en     import parsetree
+from pattern.en import parsetree
 
 # This example demonstrates how to create match groups.
 # A match group is a number of consecutive constraints,

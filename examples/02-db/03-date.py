@@ -1,6 +1,13 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from pattern.db  import date, time, NOW
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from pattern.db import date, time, NOW
 from pattern.web import Bing, NEWS
 
 # It is often useful to keep a date stamp for each row in the table.
@@ -24,6 +31,6 @@ for r in Bing(license=None, language="en").search("today", type=NEWS):
     print(date(r.date))  # date() can parse any Result.date in the web module.
     print("")
 
-d  = date("4 november 2011")
+d = date("4 november 2011")
 d += time(days=2, hours=5)
 print(d)

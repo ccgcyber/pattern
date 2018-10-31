@@ -1,5 +1,13 @@
 # coding: utf-8
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # By default, parse() uses part-of-speech tags from the Penn Treebank tagset:
 # http://www.clips.ua.ac.be/pages/penn-treebank-tagset
@@ -7,7 +15,7 @@ import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..",
 # It is a good idea to study the tagset and its abbreviations for a few minutes.
 
 from pattern.en import parse as parse_en
-print(parse_en("the black cats", chunks=False))        # the/DT black/JJ cat/NNS
+print(parse_en("the black cats", chunks=False)) # the/DT black/JJ cat/NNS
 print("")
 
 
@@ -19,12 +27,14 @@ from pattern.es import parse as parse_es
 from pattern.fr import parse as parse_fr
 from pattern.it import parse as parse_it
 from pattern.nl import parse as parse_nl
+from pattern.ru import parse as parse_ru
 
-print(parse_de("die schwarzen Katzen", chunks=False))  # die/DT schwarze/JJ Katzen/NNS
-print(parse_es("los gatos negros"    , chunks=False))  # los/DT gatos/NNS negros/JJ
-print(parse_fr("les chats noirs"     , chunks=False))  # les/DT chats/NNS noirs/JJ
-print(parse_it("i gatti neri"        , chunks=False))  # i/DT gatti/NNS neri/JJ
-print(parse_nl("de zwarte katten"    , chunks=False))  # de/DT zwarte/JJ katten/NNS
+print(parse_de("die schwarzen Katzen", chunks=False)) # die/DT schwarze/JJ Katzen/NNS
+print(parse_es("los gatos negros", chunks=False))     # los/DT gatos/NNS negros/JJ
+print(parse_fr("les chats noirs", chunks=False))      # les/DT chats/NNS noirs/JJ
+print(parse_it("i gatti neri", chunks=False))         # i/DT gatti/NNS neri/JJ
+print(parse_nl("de zwarte katten", chunks=False))     # de/DT zwarte/JJ katten/NNS
+print(parse_ru("какой сегодня хороший день!", chunks=False)) # какой/DT сегодня/RB хороший/JJ день/NN !/.
 print("")
 
 # In some cases, this means the original tagset is mapped to Penn Treebank:
@@ -35,15 +45,15 @@ from pattern.es import PAROLE
 from pattern.nl import WOTAN
 
 print(parse_de("die schwarzen Katzen", chunks=False, tagset=STTS))
-print(parse_es("los gatos negros"    , chunks=False, tagset=PAROLE))
-print(parse_nl("de zwarte katten"    , chunks=False, tagset=WOTAN))
+print(parse_es("los gatos negros", chunks=False, tagset=PAROLE))
+print(parse_nl("de zwarte katten", chunks=False, tagset=WOTAN))
 print("")
 
 # Not all languages are equally suited to Penn Treebank,
 # which was originally developed for English.
 
 # This becomes more problematic as more languages are added to Pattern.
-# It is sometimes difficult to fit determiners, pronouns, prepositions 
+# It is sometimes difficult to fit determiners, pronouns, prepositions
 # in a particular language to Penn Treebank tags (e.g., Italian "che").
 # With parse(tagset=UNIVERSAL), a simplified universal tagset is used,
 # loosely corresponding to the recommendations of Petrov (2012):
@@ -74,16 +84,16 @@ from pattern.text import NOUN, VERB, ADJ, ADV, PRON, DET, PREP, NUM, CONJ, INTJ,
 from pattern.text import parse
 
 print(parse("die schwarzen Katzen", chunks=False, language="de", tagset=UNIVERSAL))
-print(parse("the black cats"      , chunks=False, language="en", tagset=UNIVERSAL))
-print(parse("los gatos negros"    , chunks=False, language="es", tagset=UNIVERSAL))
-print(parse("les chats noirs"     , chunks=False, language="fr", tagset=UNIVERSAL))
-print(parse("i gatti neri"        , chunks=False, language="it", tagset=UNIVERSAL))
-print(parse("de zwarte katten"    , chunks=False, language="nl", tagset=UNIVERSAL))
+print(parse("the black cats", chunks=False, language="en", tagset=UNIVERSAL))
+print(parse("los gatos negros", chunks=False, language="es", tagset=UNIVERSAL))
+print(parse("les chats noirs", chunks=False, language="fr", tagset=UNIVERSAL))
+print(parse("i gatti neri", chunks=False, language="it", tagset=UNIVERSAL))
+print(parse("de zwarte katten", chunks=False, language="nl", tagset=UNIVERSAL))
 print("")
 
 # This comes at the expense of (in this example) losing information about plural nouns (NNS => NN).
 # But it may be more comfortable for you to build multilingual apps
-# using the universal constants (e.g., PRON, PREP, CONJ), 
+# using the universal constants (e.g., PRON, PREP, CONJ),
 # instead of learning the Penn Treebank tagset by heart,
 # or wonder why the Italian "che" is tagged "PRP", "IN" or "CC"
 # (in the universal tagset it is a PRON or a CONJ).
@@ -94,7 +104,7 @@ for sentence in parsetree("i gatti neri che sono la mia", language="it", tagset=
     for word in sentence.words:
         if word.tag == PRON:
             print(word)
-            
+
 # The language() function in pattern.text can be used to guess the language of a text.
 # It returns a (language code, confidence)-tuple.
 # It can guess en, es, de, fr, it, nl.
@@ -102,6 +112,6 @@ for sentence in parsetree("i gatti neri che sono la mia", language="it", tagset=
 from pattern.text import language
 
 print("")
-print(language(u"the cat sat on the mat"))              # ("en", 1.00)
-print(language(u"de kat zat op de mat"))                # ("nl", 0.80)
-print(language(u"le chat s'était assis sur le tapis"))  # ("fr", 0.86)
+print(language("the cat sat on the mat"))             # ("en", 1.00)
+print(language("de kat zat op de mat"))               # ("nl", 0.80)
+print(language("le chat s'était assis sur le tapis")) # ("fr", 0.86)

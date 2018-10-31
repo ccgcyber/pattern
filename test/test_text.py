@@ -1,17 +1,34 @@
 # -*- coding: utf-8 -*-
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+
+from builtins import str, bytes, dict, int
+from builtins import map, zip, filter
+from builtins import object, range
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import unittest
-import StringIO
+try:
+    # Python 2
+    from StringIO import StringIO
+except ImportError:
+    # Python 3
+    from io import StringIO
 
 from pattern import text
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestLexicon(unittest.TestCase):
-    
+
     def setUp(self):
         pass
-        
+
     def test_lazydict(self):
         # Assert lazy dictionary only has data after one of its methods is called.
         class V(text.lazydict):
@@ -35,41 +52,43 @@ class TestLexicon(unittest.TestCase):
         self.assertTrue(len(v), 1)
         self.assertTrue(v[0] == "a")
         print("pattern.text.lazylist")
-        
+
     def test_lexicon(self):
         # Assert lexicon from file (or file-like string).
-        f1 = u";;; Comments. \n schrödinger NNP \n cat NN"
-        f2 = StringIO.StringIO(u";;; Comments. \n schrödinger NNP \n cat NN")
+        f1 = ";;; Comments. \n schrödinger NNP \n cat NN"
+        f2 = StringIO(";;; Comments. \n schrödinger NNP \n cat NN")
         v1 = text.Lexicon(path=f1)
         v2 = text.Lexicon(path=f2)
-        self.assertEqual(v1[u"schrödinger"], "NNP")
-        self.assertEqual(v2[u"schrödinger"], "NNP")
+        self.assertEqual(v1["schrödinger"], "NNP")
+        self.assertEqual(v2["schrödinger"], "NNP")
         print("pattern.text.Lexicon")
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestFrequency(unittest.TestCase):
-    
+
     def setUp(self):
         pass
-        
+
     def test_frequency(self):
         # Assert word frequency from file (or file-like string).
-        f1 = u";;; Comments. \n the 1.0000 \n of 0.5040"
-        f2 = StringIO.StringIO(u";;; Comments. \n the 1.0000 \n of 0.5040")
+        f1 = ";;; Comments. \n the 1.0000 \n of 0.5040"
+        f2 = StringIO(";;; Comments. \n the 1.0000 \n of 0.5040")
         v1 = text.Frequency(path=f1)
         v2 = text.Frequency(path=f2)
-        self.assertEqual(v1[u"of"], 0.504)
-        self.assertEqual(v2[u"of"], 0.504)
+        self.assertEqual(v1["of"], 0.504)
+        self.assertEqual(v2["of"], 0.504)
         print("pattern.text.Frequency")
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestModel(unittest.TestCase):
-    
+
     def setUp(self):
         pass
-        
+
     def test_model(self):
         # Assert SLP language model.
         v = text.Model()
@@ -85,68 +104,72 @@ class TestModel(unittest.TestCase):
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestMorphology(unittest.TestCase):
-    
+
     def setUp(self):
         pass
-        
+
     def test_morphology(self):
         # Assert morphological tagging rules.
-        f = StringIO.StringIO(u"NN s fhassuf 1 NNS x")
+        f = StringIO("NN s fhassuf 1 NNS x")
         v = text.Morphology(f)
         self.assertEqual(v.apply(
-            ["cats", "NN"]), 
+            ["cats", "NN"]),
             ["cats", "NNS"])
         print("pattern.text.Morphology")
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestContext(unittest.TestCase):
-    
+
     def setUp(self):
         pass
-        
+
     def test_context(self):
         # Assert contextual tagging rules.
-        f = StringIO.StringIO(u"VBD VB PREVTAG TO")
+        f = StringIO("VBD VB PREVTAG TO")
         v = text.Context(path=f)
         self.assertEqual(v.apply(
-            [["to", "TO"], ["be", "VBD"]]), 
+            [["to", "TO"], ["be", "VBD"]]),
             [["to", "TO"], ["be", "VB"]])
         print("pattern.text.Context")
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestEntities(unittest.TestCase):
-    
+
     def setUp(self):
         pass
-        
+
     def test_entities(self):
         # Assert named entity recognizer.
-        f = StringIO.StringIO(u"Schrödinger's cat PERS")
+        f = StringIO("Schrödinger's cat PERS")
         v = text.Entities(path=f)
         self.assertEqual(v.apply(
-            [[u"Schrödinger's", "NNP"], ["cat", "NN"]]),
-            [[u"Schrödinger's", "NNP-PERS"], ["cat", "NNP-PERS"]])
+            [["Schrödinger's", "NNP"], ["cat", "NN"]]),
+            [["Schrödinger's", "NNP-PERS"], ["cat", "NNP-PERS"]])
         print("pattern.text.Entities")
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestParser(unittest.TestCase):
-    
+
     def setUp(self):
         pass
-        
+
     def test_stringio(self):
         # Assert loading data from file-like strings.
         p = text.Parser(
                lexicon = {"to": "TO", "saw": "VBD"},
-            morphology = StringIO.StringIO(u"NN s fhassuf 1 NNS x"),
-               context = StringIO.StringIO(u"VBD VB PREVTAG TO"))
+            morphology = StringIO("NN s fhassuf 1 NNS x"),
+               context = StringIO("VBD VB PREVTAG TO"))
         self.assertEqual(p.parse("cats"), "cats/NNS/B-NP/O")
         self.assertEqual(p.parse("to saw"), "to/TO/B-VP/O saw/VB/I-VP/O")
-        
+
     def test_find_keywords(self):
         # Assert the intrinsic keyword extraction algorithm.
         p = text.Parser()
@@ -159,38 +182,38 @@ class TestParser(unittest.TestCase):
         v4 = p.find_keywords("the. cat. dog.", frequency={"cat": 1.0, "dog": 0.0})
         self.assertEqual(v1, ["cat"])
         self.assertEqual(v2, ["cat", "dog"])
-        self.assertEqual(v3, ["dog", "cat"])
-        self.assertEqual(v3, ["dog", "cat"])
+        self.assertEqual(v3, ["cat", "dog"])
+        self.assertEqual(v4, ["dog", "cat"])
         print("pattern.text.Parser.find_keywords()")
-        
+
     def test_find_tokens(self):
         # Assert the default tokenizer and its optional parameters.
         p = text.Parser()
-        v1 = p.find_tokens(u"Schrödinger's cat is alive!", punctuation="", replace={})
-        v2 = p.find_tokens(u"Schrödinger's cat is dead!", punctuation="!", replace={"'s": " 's"})
-        v3 = p.find_tokens(u"etc.", abbreviations=set())
-        v4 = p.find_tokens(u"etc.", abbreviations=set(("etc.",)))
-        self.assertEqual(v1[0], u"Schrödinger's cat is alive!")
-        self.assertEqual(v2[0], u"Schrödinger 's cat is dead !")
+        v1 = p.find_tokens("Schrödinger's cat is alive!", punctuation="", replace={})
+        v2 = p.find_tokens("Schrödinger's cat is dead!", punctuation="!", replace={"'s": " 's"})
+        v3 = p.find_tokens("etc.", abbreviations=set())
+        v4 = p.find_tokens("etc.", abbreviations=set(("etc.",)))
+        self.assertEqual(v1[0], "Schrödinger's cat is alive!")
+        self.assertEqual(v2[0], "Schrödinger 's cat is dead !")
         self.assertEqual(v3[0], "etc .")
         self.assertEqual(v4[0], "etc.")
         print("pattern.text.Parser.find_tokens()")
-        
+
     def test_find_tags(self):
         # Assert the default part-of-speech tagger and its optional parameters.
         p = text.Parser()
-        v1 = p.find_tags([u"Schrödinger", "cat", "1.0"], lexicon={}, default=("NN?", "NNP?", "CD?"))
-        v2 = p.find_tags([u"Schrödinger", "cat", "1.0"], lexicon={"1.0": "CD?"})
-        v3 = p.find_tags([u"Schrödinger", "cat", "1.0"], map=lambda token, tag: (token, tag+"!"))
+        v1 = p.find_tags(["Schrödinger", "cat", "1.0"], lexicon={}, default=("NN?", "NNP?", "CD?"))
+        v2 = p.find_tags(["Schrödinger", "cat", "1.0"], lexicon={"1.0": "CD?"})
+        v3 = p.find_tags(["Schrödinger", "cat", "1.0"], map=lambda token, tag: (token, tag + "!"))
         v4 = p.find_tags(["observer", "observable"], language="fr")
         v5 = p.find_tags(["observer", "observable"], language="en")
-        self.assertEqual(v1, [[u"Schr\xf6dinger", "NNP?"], ["cat", "NN?"], ["1.0", "CD?"]])
-        self.assertEqual(v2, [[u"Schr\xf6dinger", "NNP" ], ["cat", "NN" ], ["1.0", "CD?"]])
-        self.assertEqual(v3, [[u"Schr\xf6dinger", "NNP!"], ["cat", "NN!"], ["1.0", "CD!"]])
+        self.assertEqual(v1, [["Schr\xf6dinger", "NNP?"], ["cat", "NN?"], ["1.0", "CD?"]])
+        self.assertEqual(v2, [["Schr\xf6dinger", "NNP"], ["cat", "NN"], ["1.0", "CD?"]])
+        self.assertEqual(v3, [["Schr\xf6dinger", "NNP!"], ["cat", "NN!"], ["1.0", "CD!"]])
         self.assertEqual(v4, [["observer", "NN"], ["observable", "NN"]])
         self.assertEqual(v5, [["observer", "NN"], ["observable", "JJ"]])
         print("pattern.text.Parser.find_tags()")
-        
+
     def test_find_chunks(self):
         # Assert the default phrase chunker and its optional parameters.
         p = text.Parser()
@@ -202,12 +225,13 @@ class TestParser(unittest.TestCase):
         self.assertEqual(v2, [["", "DT", "B-NP", "O"], ["", "JJ", "I-NP", "O"], ["", "NN", "I-NP", "O"]])
         self.assertEqual(v3, [["", "DT", "B-NP", "O"], ["", "NN", "I-NP", "O"], ["", "JJ", "B-ADJP", "O"]])
         self.assertEqual(v4, [["", "DT", "B-NP", "O"], ["", "NN", "I-NP", "O"], ["", "JJ", "I-NP", "O"]])
-        print("pattern.text.Parser.find_chunks()"  )
+        print("pattern.text.Parser.find_chunks()")
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestSentiment(unittest.TestCase):
-    
+
     def setUp(self):
         pass
 
@@ -219,8 +243,8 @@ class TestSentiment(unittest.TestCase):
         self.assertEqual(s(v)[1], +1.0)
         self.assertEqual(s(v).assessments[0], ([":-("], -0.75, 1.0, "mood"))
         self.assertEqual(s(v).assessments[1], ([":-)"], +0.50, 1.0, "mood"))
-        print "pattern.text.Sentiment.assessments"
-        
+        print("pattern.text.Sentiment.assessments")
+
     def test_bag_of_words(self):
         # Assert weighted average polarity and subjectivity for bag-of-words with weighted features.
         from pattern.vector import BagOfWords # Alias for pattern.vector.Document.
@@ -230,7 +254,7 @@ class TestSentiment(unittest.TestCase):
         self.assertEqual(s(v)[1], +1.0)
         self.assertEqual(s(v).assessments[0], ([":-("], -0.75, 1.0, "mood"))
         self.assertEqual(s(v).assessments[1], ([":-)"], +0.50, 1.0, "mood"))
-        
+
     def test_annotate(self):
         # Assert custom annotations.
         s = text.Sentiment()
@@ -241,6 +265,7 @@ class TestSentiment(unittest.TestCase):
 
 #---------------------------------------------------------------------------------------------------
 
+
 class TestMultilingual(unittest.TestCase):
 
     def setUp(self):
@@ -248,11 +273,11 @@ class TestMultilingual(unittest.TestCase):
 
     def test_language(self):
         # Assert language recognition.
-        self.assertEqual(text.language(u"the cat sat on the mat")[0], "en")
-        self.assertEqual(text.language(u"de kat zat op de mat")[0], "nl")
-        self.assertEqual(text.language(u"le chat s'était assis sur le tapis")[0], "fr")
+        self.assertEqual(text.language("the cat sat on the mat")[0], "en")
+        self.assertEqual(text.language("de kat zat op de mat")[0], "nl")
+        self.assertEqual(text.language("le chat s'était assis sur le tapis")[0], "fr")
         print("pattern.text.language()")
-        
+
     def test_deflood(self):
         # Assert flooding removal.
         self.assertEqual(text.deflood("NIIICE!!!", n=1), "NICE!")
@@ -260,6 +285,7 @@ class TestMultilingual(unittest.TestCase):
         print("pattern.text.deflood()")
 
 #---------------------------------------------------------------------------------------------------
+
 
 def suite():
     suite = unittest.TestSuite()
@@ -275,4 +301,6 @@ def suite():
     return suite
 
 if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=1).run(suite())
+
+    result = unittest.TextTestRunner(verbosity=1).run(suite())
+    sys.exit(not result.wasSuccessful())

@@ -1,5 +1,13 @@
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-import codecs
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from io import open
 
 from pattern.vector import Document, PORTER, LEMMA
 
@@ -13,7 +21,7 @@ from pattern.vector import Document, PORTER, LEMMA
 # Words can be stemmed or lemmatized before counting them.
 # The purpose of stemming is to bring variant forms a word together.
 # For example, "conspiracy" and "conspired" are both stemmed to "conspir".
-# Nowadays, lemmatization is usually preferred over stemming, 
+# Nowadays, lemmatization is usually preferred over stemming,
 # e.g., "conspiracies" => "conspiracy", "conspired" => "conspire".
 
 s = """
@@ -30,8 +38,8 @@ before its flight window closed this Monday.
 # With threshold=1, only words that occur more than once are counted.
 # With stopwords=False, words like "the", "and", "I", "is" are ignored.
 document = Document(s, threshold=1, stopwords=False)
-print document.words
-print
+print(document.words)
+print()
 
 # The /corpus folder contains texts mined from Wikipedia.
 # Below is the mining script (we already executed it for you):
@@ -41,37 +49,37 @@ print
 #
 #w = Wikipedia()
 #for q in (
-#  "badger", "bear", "dog", "dolphin", "lion", "parakeet", 
+#  "badger", "bear", "dog", "dolphin", "lion", "parakeet",
 #  "rabbit", "shark", "sparrow", "tiger", "wolf"):
 #    s = w.search(q, cached=True)
 #    s = s.plaintext()
-#    print os.path.join("corpus2", q+".txt")
-#    f = codecs.open(os.path.join("corpus2", q+".txt"), "w", encoding="utf-8")
+#    print(os.path.join("corpus2", q+".txt"))
+#    f = open(os.path.join("corpus2", q+".txt"), "w", encoding="utf-8")
 #    f.write(s)
 #    f.close()
 
 # Loading a document from a text file:
 f = os.path.join(os.path.dirname(__file__), "corpus", "wolf.txt")
-s = codecs.open(f, encoding="utf-8").read()
+s = open(f, encoding="utf-8").read()
 document = Document(s, name="wolf", stemmer=PORTER)
-print document
-print document.keywords(top=10) # (weight, feature)-items.
-print
+print(document)
+print(document.keywords(top=10)) # (weight, feature)-items.
+print()
 
 # Same document, using lemmatization instead of stemming (slower):
 document = Document(s, name="wolf", stemmer=LEMMA)
-print document
-print document.keywords(top=10)
-print
+print(document)
+print(document.keywords(top=10))
+print()
 
 # In summary, a document is a bag-of-words representation of a text.
 # Bag-of-words means that the word order is discarded.
 # The dictionary of words (features) and their normalized word count (weights)
 # is also called the document vector:
 document = Document("a black cat and a white cat", stopwords=True)
-print document.words
-print document.vector.features
+print(document.words)
+print(document.vector.features)
 for feature, weight in document.vector.items():
-    print feature, weight
+    print(feature, weight)
 
 # Document vectors can be bundled into a Model (next example).

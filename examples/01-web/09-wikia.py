@@ -1,5 +1,13 @@
 # -*- coding: utf-8 *-*
-import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import str, bytes, dict, int
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from pattern.web import Wikia
 
@@ -25,7 +33,7 @@ print(w.search("Three Headed Monkey"))
 
 # We can iterate through all articles with the Wikia.articles() method
 # (note that Wikipedia also has a Wikipedia.articles() method).
-# The "count" parameter sets the number of article titles to retrieve per query. 
+# The "count" parameter sets the number of article titles to retrieve per query.
 # Retrieving the full article for each article takes another query. This can be slow.
 i = 0
 for article in w.articles(count=2, cached=True):
@@ -36,7 +44,7 @@ for article in w.articles(count=2, cached=True):
     if i >= 3:
         break
 
-# Alternatively, we can retrieve just the titles, 
+# Alternatively, we can retrieve just the titles,
 # and only retrieve the full articles for the titles we need:
 i = 0
 for title in w.index(count=2):
